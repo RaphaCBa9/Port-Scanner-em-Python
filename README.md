@@ -13,7 +13,7 @@ Este é um script Python para escaneamento de portas TCP e UDP, além da listage
 
 ## Como usar
 
-1. **Clone o repositório** ou copie o script para o seu ambiente local.
+1. **Clone o repositório**
 2. **Execute o script** com o comando:
    ```sh
    python3 main.py
