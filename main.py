@@ -48,12 +48,7 @@ def listar_hosts():
     except Exception as e:
         print(f"Erro ao listar hosts: {e}")
 
-
-
-def main():
-    
-    print("\n\nRoteiro 01: Port Scanner\n\n")
-
+def PortScanning():
     while True:
         print("\n*************************************\n")
         print("Selecione uma opção:")
@@ -61,7 +56,7 @@ def main():
         print("1 - Escanear portas principais TCP (well-known ports)")
         print("2 - Escanear portas principais UDP (well-known ports)")
         print("3 - Intervalo de portas ou portas específicas")
-        print("4 - Sair")
+        print("4 - Voltar ao menu principal")
 
         opcao = input("\nSelecione: ")
 
@@ -124,7 +119,120 @@ def main():
 
         else:
             print("\nOpção inválida!")
-    print("\nFim do programa.")
+    
+    return
+
+def whois_lookup():
+
+    alvo = input("\nDigite o domínio ou IP para consulta WHOIS (ou pressione Enter para voltar): ")
+    if not alvo:
+        return
+
+    print(f"\nConsultando WHOIS para: {alvo}\n")
+    try:
+        resultado = subprocess.run(["whois", alvo], capture_output=True, text=True, timeout=10)
+        print(resultado.stdout)
+    except FileNotFoundError:
+        print("\nErro: O utilitário 'whois' não está instalado no sistema.")
+    except subprocess.TimeoutExpired:
+        print("\nErro: A consulta WHOIS excedeu o tempo limite.")
+    except Exception as e:
+        print(f"\nErro ao executar WHOIS: {e}")
+
+def wafw00f_scan():
+
+    alvo = input("\nDigite a URL ou IP para análise com wafw00f (ou pressione Enter para voltar): ")
+    if not alvo:
+        return
+
+    print(f"\nAnalisando proteção WAF em: {alvo}\n")
+    try:
+        resultado = subprocess.run(["wafw00f", alvo], capture_output=True, text=True, timeout=15)
+        print(resultado.stdout)
+    except FileNotFoundError:
+        print("\nErro: O utilitário 'wafw00f' não está instalado. Use 'pip install wafw00f' para instalar.")
+    except subprocess.TimeoutExpired:
+        print("\nErro: A execução do wafw00f excedeu o tempo limite.")
+    except Exception as e:
+        print(f"\nErro ao executar wafw00f: {e}")
+
+def dirb_scan():
+    alvo = input("\nDigite a URL ou IP para varredura de diretórios (ou pressione Enter para voltar): ")
+    if not alvo:
+        return
+
+    print(f"\nIniciando varredura de diretórios em: {alvo}\n")
+    try:
+        resultado = subprocess.run(["dirb", alvo, "/usr/share/dirb/wordlists/small.txt"], capture_output=True, text=True, timeout=90)
+        print(resultado.stdout)
+    except FileNotFoundError:
+        print("\nErro: O utilitário 'dirb' não está instalado. Use 'apt install dirb' para instalar.")
+    except subprocess.TimeoutExpired:
+        print("\nErro: A execução do dirb excedeu o tempo limite.")
+    except Exception as e:
+        print(f"\nErro ao executar dirb: {e}")
+
+def nikto_scan():
+    """Executa o nikto para varredura de vulnerabilidades web"""
+    alvo = input("\nDigite a URL ou IP do alvo para escanear com nikto (ou pressione Enter para voltar): ")
+    if not alvo:
+        return
+
+    print(f"\nIniciando varredura com nikto em: {alvo}\n")
+    try:
+        resultado = subprocess.run(
+            ["nikto", "-h", alvo],
+            capture_output=True,
+            text=True,
+            timeout=120
+        )
+        print(resultado.stdout)
+    except FileNotFoundError:
+        print("\nErro: O utilitário 'nikto' não está instalado. Use 'sudo apt install nikto'.")
+    except subprocess.TimeoutExpired:
+        print("\nErro: A execução do nikto excedeu o tempo limite.")
+    except Exception as e:
+        print(f"\nErro ao executar nikto: {e}")
+
+
+def main():
+    
+    print("\n\n Este é TargetRecon, seu aplicativo de reconhecimento de alvos \n\n")
+    print("Criado por: @RaphaCBa9")
+
+    while True:
+        print("\n*************************************\n")
+        print("Selecione uma opção:")
+        print('0 - Port Scanning')
+        print("1 - Consulta WHOIS")
+        print("2 - Detecção de WAF (wafw00f)")
+        print("3 - Varredura de diretórios (DIRB)")
+        print("4 - Varredura de Vulnerabilidades (nikto)")
+        print("5 - Finalizar")
+
+        opcao = input("\nSelecione: ")
+
+        if opcao == "0":
+            PortScanning()
+
+        elif opcao == "1":
+            whois_lookup()
+
+        elif opcao == "2":
+            wafw00f_scan()
+
+        elif opcao == "3":
+            dirb_scan()
+        
+        elif opcao == "4":
+            nikto_scan()
+
+        elif opcao == "5":
+            print("\nSaindo...")
+            break
+    
+    print("\nObrigado por usar TargetRecon!")
+
 
 
 
@@ -132,7 +240,7 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        print("\nScan cancelado pelo usuário.")
+        print("\n Programa cancelado pelo usuário.")
         sys.exit(1)
 
 
